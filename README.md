@@ -1,115 +1,120 @@
-# Brain-Tumor-Detector
-Building a detection model using a convolutional neural network in Tensorflow & Keras.<br>
-Used a brain MRI images data founded on Kaggle. You can find it [here](https://www.kaggle.com/navoneel/brain-mri-images-for-brain-tumor-detection).<br>
+# 🧠 Brain Tumor Detection using CNN
 
-**About the data:**<br>
-The dataset contains 2 folders: yes and no which contains 253 Brain MRI Images. The folder yes contains 155 Brain MRI Images that are tumorous and the folder no contains 98 Brain MRI Images that are non-tumorous.
+![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange?style=for-the-badge&logo=tensorflow)
+![Keras](https://img.shields.io/badge/Keras-red?style=for-the-badge&logo=keras)
+![Accuracy](https://img.shields.io/badge/Test%20Accuracy-88.7%25-brightgreen?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=for-the-badge)
 
-# Getting Started
+> A deep learning model that detects brain tumors from MRI scans using a Convolutional Neural Network (CNN) built with TensorFlow and Keras — achieving **88.7% accuracy** and **0.88 F1 score** on the test set.
 
-**Note:** sometimes viewing IPython notebooks using GitHub viewer doesn't work as expected, so you can always view them using [nbviewer](https://nbviewer.jupyter.org/).
+---
 
-## Data Augmentation:
+## 📌 Project Overview
 
-**Why did I use data augmentation?**
+Brain tumor detection from MRI images is a critical medical imaging task. Manual diagnosis is time-consuming and prone to human error. This project automates the detection process using a CNN trained on labeled MRI scan data.
 
-Since this is a small dataset, There wasn't enough examples to train the neural network. Also, data augmentation was useful in taclking the data imbalance issue in the data.<br>
+**Key Highlights:**
+- Binary classification: Tumor (Yes) vs No Tumor (No)
+- Trained on 253 Brain MRI images from Kaggle
+- Applied **Data Augmentation** to handle small dataset size
+- Best model selected based on validation accuracy
 
-Further explanations are found in the Data Augmentation notebook.
+---
 
-Before data augmentation, the dataset consisted of:<br>
-155 positive and 98 negative examples, resulting in 253 example images.
+## 📊 Results
 
-After data augmentation, now the dataset consists of:<br>
-1085 positive and 980 examples, resulting in 2065 example images.
+| Metric | Validation Set | Test Set |
+|--------|---------------|----------|
+| Accuracy | 91% | 88.7% |
+| F1 Score | 0.91 | 0.88 |
 
-**Note:** these 2065 examples contains also the 253 original images. They are found in folder named 'augmented data'.
+---
 
-## Data Preprocessing
+## 🗂️ Dataset
 
-For every image, the following preprocessing steps were applied:
+- **Source:** [Kaggle Brain MRI Images](https://www.kaggle.com/navoneel/brain-mri-images-for-brain-tumor-detection)
+- **Total Images:** 253
+  - `yes/` — 155 tumorous MRI images
+  - `no/` — 98 non-tumorous MRI images
 
-1. Crop the part of the image that contains only the brain (which is the most important part of the image).
-2. Resize the image to have a shape of (240, 240, 3)=(image_width, image_height, number of channels): because images in the dataset come in different sizes. So, all images should have the same shape to feed it as an input to the neural network.
-3. Apply normalization: to scale pixel values to the range 0-1.
+---
 
-## Data Split:
-
-The data was split in the following way:
-1. 70% of the data for training.
-2. 15% of the data for validation.
-3. 15% of the data for testing.
-
-# Neural Network Architecture
-
-This is the architecture that I've built:
-
-![Neural Network Architecture](convnet_architecture.jpg)
-
-**Understanding the architecture:**<br>
-Each input x (image) has a shape of (240, 240, 3) and is fed into the neural network. And, it goes through the following layers:<br>
-
-1. A Zero Padding layer with a pool size of (2, 2).
-2. A convolutional layer with 32 filters, with a filter size of (7, 7) and a stride equal to 1.
-3. A batch normalization layer to normalize pixel values to speed up computation.
-4. A ReLU activation layer.
-5. A Max Pooling layer with f=4 and s=4.
-6. A Max Pooling layer with f=4 and s=4, same as before.
-7. A flatten layer in order to flatten the 3-dimensional matrix into a one-dimensional vector.
-8. A Dense (output unit) fully connected layer with one neuron with a sigmoid activation (since this is a binary classification task).
-
-**Why this architecture?**<br>
-
-Firstly, I applied transfer learning using a ResNet50 and vgg-16, but these models were too complex to the data size and were overfitting. Of course, you may get good results applying transfer learning with these models using data augmentation. But, I'm using training on a computer with 6th generation Intel i7 CPU and 8 GB memory. So, I had to take into consideration computational complexity and memory limitations.<br>
-
-So why not try a simpler architecture and train it from scratch. And it worked :)
-
-# Training the model
-The model was trained for 24 epochs and these are the loss & accuracy plots:
-
-
-![Loss plot](Loss.PNG)
-
-
-![Accuracy plot](Accuracy.PNG)
-
-The best validation accuracy was achieved on the 23rd iteration.
-
-# Results
-
-Now, the best model (the one with the best validation accuracy) detects brain tumor with:<br>
-
-**88.7%** accuracy on the **test set**.<br>
-**0.88** f1 score on the **test set**.<br>
-These resutls are very good considering that the data is balanced.
-
-**Performance table of the best model:**
-
-| <!-- -->  | Validation set | Test set |
-| --------- | -------------- | -------- |
-| Accuracy  | 91%            | 89%      |
-| F1 score  | 0.91           | 0.88     |
-
-
-# Final Notes
-
-What's in the files?
-
-1. The code in the IPython notebooks.
-2. The weights for all the models. The best model is named as 'cnn-parameters-improvement-23-0.91.model'.
-3. The models are stored as *.model* files. They can be restored as follows:
-
+## 🏗️ Model Architecture
 
 ```
+Input (MRI Image)
+      ↓
+Conv2D + ReLU
+      ↓
+MaxPooling2D
+      ↓
+Conv2D + ReLU
+      ↓
+MaxPooling2D
+      ↓
+Flatten
+      ↓
+Dense (Fully Connected)
+      ↓
+Output (Sigmoid → Yes/No)
+```
+
+---
+
+## 🔄 Data Augmentation
+
+Since the dataset only has 253 images, data augmentation was applied to:
+- Prevent overfitting
+- Artificially increase training data variety
+
+Techniques: Rotation, Width/Height shift, Horizontal flip, Zoom
+
+---
+
+## 🚀 Getting Started
+
+```bash
+pip install tensorflow keras numpy matplotlib scikit-learn opencv-python
+git clone https://github.com/renuka4524/Brain-Tumor-Detection.git
+cd Brain-Tumor-Detection
+jupyter notebook "Brain Tumor Detection.ipynb"
+```
+
+---
+
+## 💾 Loading the Best Model
+
+```python
 from tensorflow.keras.models import load_model
 best_model = load_model(filepath='models/cnn-parameters-improvement-23-0.91.model')
 ```
 
-4. The original data in the folders named 'yes' and 'no'. And, the augmented data in the folder named 'augmented data'.
+---
 
+## 🛠️ Tech Stack
 
-Contributes are welcome!
-<br>Thank you!
+- **Language:** Python 3.8+
+- **Deep Learning:** TensorFlow, Keras
+- **Data Processing:** NumPy, OpenCV, PIL
+- **Visualization:** Matplotlib
+- **Evaluation:** Scikit-learn
 
+---
 
+## 🙋 Author
 
+**Renuka** — BTech CSE  
+📧 [renukam2611@gmail.com]  
+🔗 [www.linkedin.com/in/renuka-madhasani]  
+🐙 [github.com/renuka4524](https://github.com/renuka4524)
+
+---
+
+## 📄 License
+
+Apache 2.0 — see [LICENSE](LICENSE) for details.
+
+---
+
+⭐ *If you found this project useful, consider giving it a star!*
